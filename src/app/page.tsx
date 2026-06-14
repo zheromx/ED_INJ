@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
+export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const [totalAlumnos, totalGrupos, totalCursos, totalSesiones] = await Promise.all([
     prisma.alumno.count({ where: { activo: true } }),
@@ -17,8 +18,8 @@ export default async function DashboardPage() {
   const asistenciaPorcentaje =
     asistencias.length > 0
       ? Math.round(
-          (asistencias.filter((a) => a.asistio).length / asistencias.length) * 100
-        )
+        (asistencias.filter((a) => a.asistio).length / asistencias.length) * 100
+      )
       : 0;
 
   const sesionesRecientes = await prisma.sesion.findMany({
@@ -93,7 +94,7 @@ export default async function DashboardPage() {
                   const asistieron = sesion.asistencias.filter((a) => a.asistio).length;
                   const total = sesion.asistencias.length;
                   const porcentaje = total > 0 ? Math.round((asistieron / total) * 100) : 0;
-                  
+
                   return (
                     <div key={sesion.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                       <div>
