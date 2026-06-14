@@ -1,0 +1,126 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Maestro {
+  id             Int       @id @default(autoincrement()) // IdMaestro
+  nombreCompleto String    @db.VarChar(200)
+  telefono       String?   @db.VarChar(20)
+  correo         String?   @db.VarChar(100)
+  activo         Boolean   @default(true)
+  
+  gruposTitular  Grupo[]   @relation("MaestroTitular")
+  gruposAux1     Grupo[]   @relation("Auxiliar1")
+  gruposAux2     Grupo[]   @relation("Auxiliar2")
+  sesiones       Sesion[]
+}
+
+model Alumno {
+  id              Int           @id @default(autoincrement()) // IdAlumno
+  nombre          String        @db.VarChar(100)
+  apellidoPaterno String        @db.VarChar(100)
+  apellidoMaterno String?       @db.VarChar(100)
+  fechaNacimiento DateTime?     @db.Date
+  sexo            String?       @db.Char(1)
+  activo          Boolean       @default(true)
+  
+  grupos          AlumnoGrupo[]
+  asistencias     Asistencia[]
+}
+
+model Grupo {
+  id               Int           @id @default(autoincrement()) // IdGrupo
+  nombreGrupo      String        @db.VarChar(100)
+  descripcion      String?       @db.VarChar(500)
+  maestroTitularId Int
+  auxiliar1Id      Int?
+  auxiliar2Id      Int?
+  activo           Boolean       @default(true)
+
+  maestroTitular   Maestro       @relation("MaestroTitular", fields: [maestroTitularId], references: [id])
+  auxiliar1        Maestro?      @relation("Auxiliar1", fields: [auxiliar1Id], references: [id])
+  auxiliar2        Maestro?      @relation("Auxiliar2", fields: [auxiliar2Id], references: [id])
+
+  alumnos          AlumnoGrupo[]
+  cursos           GrupoCurso[]
+}
+
+model AlumnoGrupo {
+  id           Int      @id @default(autoincrement()) // IdAlumnoGrupo
+  alumnoId     Int
+  grupoId      Int
+  fechaIngreso DateTime @default(now()) @db.Date
+  activo       Boolean  @default(true)
+
+  alumno       Alumno   @relation(fields: [alumnoId], references: [id])
+  grupo        Grupo    @relation(fields: [grupoId], references: [id])
+}
+
+model Curso {
+  id          Int          @id @default(autoincrement()) // IdCurso
+  nombreCurso String       @db.VarChar(200)
+  descripcion String?      @db.VarChar(1000)
+  activo      Boolean      @default(true)
+
+  lecciones   Leccion[]
+  grupos      GrupoCurso[]
+}
+
+model Leccion {
+  id            Int      @id @default(autoincrement()) // IdLeccion
+  cursoId       Int
+  numeroLeccion Int
+  titulo        String   @db.VarChar(200)
+  descripcion   String?  @db.VarChar(1000)
+
+  curso         Curso    @relation(fields: [cursoId], references: [id])
+  sesiones      Sesion[]
+}
+
+model GrupoCurso {
+  id          Int       @id @default(autoincrement()) // IdGrupoCurso
+  grupoId     Int
+  cursoId     Int
+  fechaInicio DateTime  @db.Date
+  fechaFin    DateTime? @db.Date
+  estado      String    @db.VarChar(20) @default("Activo") // Activo, Finalizado, Pausado
+
+  grupo       Grupo     @relation(fields: [grupoId], references: [id])
+  curso       Curso     @relation(fields: [cursoId], references: [id])
+  sesiones    Sesion[]
+}
+
+model Sesion {
+  id                Int          @id @default(autoincrement()) // IdSesion
+  grupoCursoId      Int
+  leccionId         Int
+  fechaSesion       DateTime     @db.Date
+  maestroImpartioId Int
+  observaciones     String?      @db.VarChar(1000)
+  ofrenda           Float?
+
+  grupoCurso        GrupoCurso   @relation(fields: [grupoCursoId], references: [id])
+  leccion           Leccion      @relation(fields: [leccionId], references: [id])
+  maestro           Maestro      @relation(fields: [maestroImpartioId], references: [id])
+  asistencias       Asistencia[]
+}
+
+model Asistencia {
+  id                Int      @id @default(autoincrement()) // IdAsistencia
+  sesionId          Int
+  alumnoId          Int
+  asistio           Boolean  @default(false)
+  trajoBiblia       Boolean  @default(false)
+  capitulosLeidos   Int?
+  diasAyuno         Int?
+  visitasRealizadas Int?
+  observaciones     String?  @db.VarChar(500)
+
+  sesion            Sesion   @relation(fields: [sesionId], references: [id])
+  alumno            Alumno   @relation(fields: [alumnoId], references: [id])
+}
