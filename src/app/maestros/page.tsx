@@ -1,6 +1,7 @@
 import { getMaestros } from "@/app/actions/maestros";
 import { MaestrosClient } from "./MaestrosClient";
 
+export const dynamic = "force-dynamic";
 export default async function MaestrosPage() {
   const maestros = await getMaestros();
 

@@ -4,6 +4,7 @@ import { getGrupos } from "@/app/actions/grupos";
 import { getCursos } from "@/app/actions/cursos";
 import { AsignacionesClient } from "./AsignacionesClient";
 
+export const dynamic = "force-dynamic";
 export default async function AsignacionesPage(props: { searchParams?: Promise<{ tab?: string; grupoId?: string }> }) {
   const searchParams = await props.searchParams;
   const defaultTab = searchParams?.tab || "alumnos";
@@ -23,12 +24,12 @@ export default async function AsignacionesPage(props: { searchParams?: Promise<{
         <h2 className="text-2xl font-bold tracking-tight">Asignaciones</h2>
         <p className="text-muted-foreground">Asigna alumnos a grupos y cursos a grupos.</p>
       </div>
-      <AsignacionesClient 
-        alumnoGrupos={alumnoGrupos} 
-        grupoCursos={grupoCursos} 
-        alumnos={alumnos} 
-        grupos={grupos} 
-        cursos={cursos} 
+      <AsignacionesClient
+        alumnoGrupos={alumnoGrupos}
+        grupoCursos={grupoCursos}
+        alumnos={alumnos}
+        grupos={grupos}
+        cursos={cursos}
         defaultTab={defaultTab}
         defaultGrupoId={defaultGrupoId}
       />

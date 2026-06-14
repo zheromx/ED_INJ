@@ -2,12 +2,13 @@ import { getLecciones } from "@/app/actions/lecciones";
 import { getCursos } from "@/app/actions/cursos";
 import { LeccionesClient } from "./LeccionesClient";
 
+export const dynamic = "force-dynamic";
 export default async function LeccionesPage(
   props: { searchParams?: Promise<{ cursoId?: string }> }
 ) {
   const searchParams = await props.searchParams;
   const cursoIdParam = searchParams?.cursoId;
-  
+
   const [lecciones, cursos] = await Promise.all([
     getLecciones(),
     getCursos(),

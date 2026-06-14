@@ -1,6 +1,7 @@
 import { getCursos } from "@/app/actions/cursos";
 import { CursosClient } from "./CursosClient";
 
+export const dynamic = "force-dynamic";
 export default async function CursosPage() {
   const cursos = await getCursos();
 

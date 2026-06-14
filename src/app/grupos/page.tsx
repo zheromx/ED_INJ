@@ -2,6 +2,7 @@ import { getGrupos } from "@/app/actions/grupos";
 import { getMaestros } from "@/app/actions/maestros";
 import { GruposClient } from "./GruposClient";
 
+export const dynamic = "force-dynamic";
 export default async function GruposPage() {
   const [grupos, maestros] = await Promise.all([
     getGrupos(),
