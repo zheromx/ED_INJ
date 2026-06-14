@@ -1,6 +1,7 @@
 import { getAlumnos } from "@/app/actions/alumnos";
 import { AlumnosClient } from "./AlumnosClient";
 
+export const dynamic = "force-dynamic";
 export default async function AlumnosPage() {
   const alumnos = await getAlumnos();
 
